@@ -1,0 +1,15 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1
+    alicloud:
+      access-key: LTAI4FzhuX1rFQt2yWDmgwsn
+      secret-key: z3ZFoNHoCaG1V1qmQ32Dm4OTLNP5fA
+      oss:
+        endpoint: oss-cn-shanghai.aliyuncs.com
+        bucket: wts-gulimall
+  application:
+    name: gulimall-thrid-party
+server:
+  port: 30000
