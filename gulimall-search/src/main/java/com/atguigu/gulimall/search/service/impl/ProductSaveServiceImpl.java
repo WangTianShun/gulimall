@@ -43,7 +43,7 @@ public class ProductSaveServiceImpl implements ProductSaveService {
             //1、构造保存请求
             IndexRequest indexRequest = new IndexRequest(EsConstant.PRODUCT_INDEX);
             indexRequest.id(model.getSkuId().toString());
-            String jsonString = JSON.toJSONString(indexRequest);
+            String jsonString = JSON.toJSONString(model);
             indexRequest.source(jsonString, XContentType.JSON);
             bulkRequest.add(indexRequest);
         }

@@ -296,14 +296,17 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
             esModel.setCatalogName(category.getName());
             //设置检索属性
             esModel.setAttrs(attrsList);
+            System.out.println("======================esModel"+esModel);
             return esModel;
         }).collect(Collectors.toList());
 
         //TODO 5、将数据发送给es进行保存
         R r = searchFeignService.productStatusUp(upProducts);
+        System.out.println("========================="+r);
         if (r.getCode() == 0){
             //远程调用成功
             //TODO 6、修改当前spu的状态
+            System.out.println("修改当前spu的状态");
             baseMapper.updateSpuStatus(spuId, ProductConstant.StatusEnum.SPU_UP.getCode());
         }else {
             //远程调用失败

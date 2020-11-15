@@ -1,6 +1,5 @@
 package com.atguigu.gulimall.search.controller;
 
-import com.atguigu.common.constant.ProductConstant;
 import com.atguigu.common.exception.BizCodeEnume;
 import com.atguigu.common.to.es.SkuEsModel;
 import com.atguigu.common.utils.R;
@@ -28,7 +27,7 @@ public class ElasticSaveController {
     @Autowired
     ProductSaveService productSaveService;
     //上架商品
-    @PostMapping("product")
+    @PostMapping("/product")
     public R productStatusUp(@RequestBody List<SkuEsModel> skuEsModels){
         boolean b = false;
         try{
