@@ -9,6 +9,12 @@ spring:
       oss:
         endpoint: oss-cn-shanghai.aliyuncs.com
         bucket: wts-gulimall
+      sms:
+        host: https://fsmsn.market.alicloudapi.com
+        path: /fsms132
+        skin: 1
+        sign: 1
+        appcode: 51d31e027fbf47a2b15a569cf88ddbb4
   application:
     name: gulimall-thrid-party
 server:

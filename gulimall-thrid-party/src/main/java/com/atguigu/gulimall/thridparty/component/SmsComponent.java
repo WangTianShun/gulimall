@@ -1,11 +1,12 @@
-package com.atguigu.gulimall.thridparty;
+package com.atguigu.gulimall.thridparty.component;
 
-import com.aliyun.oss.OSSClient;
-import com.atguigu.gulimall.thridparty.component.SmsComponent;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import java.io.*;
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -13,31 +14,24 @@ import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @Description: SmsComponent
+ * @Author: WangTianShun
+ * @Date: 2020/11/18 9:42
+ * @Version 1.0
+ */
+@ConfigurationProperties(prefix = "spring.cloud.alicloud.sms")
+@Data //为这些方法生成getter,setter
+@Component
+public class SmsComponent {
 
-@SpringBootTest
-class GulimallThridPartyApplicationTests {
-    @Autowired
-    OSSClient ossClient;
+    private String host;  // 【1】请求地址 支持http 和 https 及 WEBSOCKET
+    private String path;  // 【2】后缀
+    private String skin;
+    private String sign;
+    private String appcode; // 【3】开通服务后 买家中心-查看AppCode
 
-    @Autowired
-    SmsComponent smsComponent;
-
-    @Test
-    public void testsendSmsCode(){
-        smsComponent.sendSmsCode("18896736055","563540");
-
-    }
-
-    
-    @Test
-    public void sendSms() {
-        String host = "https://fsmsn.market.alicloudapi.com";  // 【1】请求地址 支持http 和 https 及 WEBSOCKET
-        String path = "/fsms132";  // 【2】后缀
-        String appcode = "51d31e027fbf47a2b15a569cf88ddbb4"; // 【3】开通服务后 买家中心-查看AppCode
-        String param = "123456";  // 【4】请求参数，详见文档描述
-        String phone = "18896736055";  //  【4】请求参数，详见文档描述
-        String sign = "175622";   //  【4】请求参数，详见文档描述
-        String skin = "1";  //  【4】请求参数，详见文档描述
+    public void sendSmsCode(String phone, String param){
         String urlSend = host + path + "?param=" + param +"&phone="+phone +"&sign="+sign +"&skin="+skin;   // 【5】拼接请求链接
         try {
             URL url = new URL(urlSend);
@@ -77,7 +71,6 @@ class GulimallThridPartyApplicationTests {
             // e.printStackTrace();
         }
     }
-
     /*
      * 读取返回结果
      */
@@ -91,34 +84,5 @@ class GulimallThridPartyApplicationTests {
         }
         br.close();
         return sb.toString();
-    }
-
-
-
-    //1、引入oss-starter
-    //2、配置key,endpoint相关信息即可
-    //3、使用OSSClient 进行相关操作
-    @Test
-    void contextLoads() {
-    }
-    @Test
-    public void testUpload() throws FileNotFoundException {
-//        // Endpoint以杭州为例，其它Region请按实际情况填写。
-//        String endpoint = "oss-cn-shanghai.aliyuncs.com";
-//        // 云账号AccessKey有所有API访问权限，建议遵循阿里云安全最佳实践，创建并使用RAM子账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建。
-//        String accessKeyId = "LTAI4FzhuX1rFQt2yWDmgwsn";
-//        String accessKeySecret = "z3ZFoNHoCaG1V1qmQ32Dm4OTLNP5fA";
-
-//        // 创建OSSClient实例。
-//        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-
-        // 上传文件流。
-        InputStream inputStream = new FileInputStream("C:\\Users\\56354\\Pictures\\Saved Pictures\\1.png");
-        ossClient.putObject("wts-gulimall", "1.png", inputStream);
-
-        // 关闭OSSClient。
-        ossClient.shutdown();
-
-        System.out.println("上传完成。。。");
     }
 }
