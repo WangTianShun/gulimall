@@ -4,7 +4,9 @@ import com.atguigu.gulimall.member.dao.MemberLevelDao;
 import com.atguigu.gulimall.member.entity.MemberLevelEntity;
 import com.atguigu.gulimall.member.exception.PhoneExistException;
 import com.atguigu.gulimall.member.exception.UserNameExistException;
+import com.atguigu.gulimall.member.vo.MemberLoginVo;
 import com.atguigu.gulimall.member.vo.MemberRegistVo;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -74,6 +76,31 @@ public class MemberServiceImpl extends ServiceImpl<MemberDao, MemberEntity> impl
         if (count > 0){
             throw new UserNameExistException();
         }
+    }
+
+    @Override
+    public MemberEntity login(MemberLoginVo vo) {
+        String loginacct = vo.getLoginacct();
+        String password = vo.getPassword();
+        //去数据库查询
+        MemberDao memberDao = this.baseMapper;
+        MemberEntity memberEntity = memberDao.selectOne(new QueryWrapper<MemberEntity>().eq("username", loginacct).or().eq("mobile", loginacct));
+        if (memberEntity == null){
+            //登录失败
+            return null;
+        }else {
+            //1、获取到数据库的password
+            String passwordDB = memberEntity.getPassword();
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+            //2、密码匹配
+            boolean matches = passwordEncoder.matches(password, passwordDB);
+            if (matches){
+                return memberEntity;
+            }else {
+                return null;
+            }
+        }
+
     }
 
 }
