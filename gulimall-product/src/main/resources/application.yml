@@ -25,6 +25,8 @@ spring:
   redis:
     host: 172.20.10.3
     port: 6379
+  session:
+    store-type: redis   #指定session的存储格式
 
   cache:
     type: redis
@@ -33,6 +35,7 @@ spring:
 #      key-prefix: CACHE_   #如果指定了前缀就用我们指定的前缀，如果没有就默认使用缓存的名字作为前缀
       use-key-prefix: true
       cache-null-values: true   #是否缓存空值，防止缓存穿透
+
 #    cache-names: qq
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml

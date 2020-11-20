@@ -2,22 +2,21 @@ package com.atguigu.gulimall.auth.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.atguigu.common.constant.AuthServerConstant;
 import com.atguigu.common.utils.HttpUtils;
 import com.atguigu.common.utils.R;
 import com.atguigu.gulimall.auth.feign.MemberFeignService;
-import com.atguigu.gulimall.auth.vo.MemberResponseVO;
+import com.atguigu.common.vo.MemberResponseVO;
 import com.atguigu.gulimall.auth.vo.SocialUser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +40,7 @@ public class Oauth2Controller {
      * @throws Exception
      */
     @GetMapping("/oauth2.0/weibo/success")
-    public String weibo(@RequestParam("code") String code, RedirectAttributes attributes) throws Exception {
+    public String weibo(@RequestParam("code") String code, HttpSession session, RedirectAttributes attributes) throws Exception {
         //1. 使用code换取token，换取成功则继续2，否则重定向至登录页
         Map<String,String> map = new HashMap<>();
         map.put("client_id","798445888");
@@ -63,8 +62,11 @@ public class Oauth2Controller {
             if (r.getCode() == 0) {
                 // session 子域共享问题
                 MemberResponseVO loginUser = r.getData(new TypeReference<MemberResponseVO>() {});
-//                session.setAttribute(AuthServerConstant.LOGIN_USER, loginUser);
                 log.info("登陆成功：用户信息"+loginUser.toString());
+                //TODO 1、默认发的令牌。 session=dakadja; 作用域：当前域。（解决子域session共享问题）
+                //TODO 2、使用json的序列化方式来序列化对象数据到redis中
+                session.setAttribute("loginUser", loginUser);
+
                 return "redirect:http://gulimall.com";
             } else {
                 //2.2 否则返回登录页
