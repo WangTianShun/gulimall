@@ -20,6 +20,13 @@
     </properties>
 
     <dependencies>
+        <!--属性配置的提示工具-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!--整合SpringSession完成session共享问题-->
         <dependency>
             <groupId>org.springframework.session</groupId>
