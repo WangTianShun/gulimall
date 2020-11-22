@@ -37,12 +37,12 @@ public class CartController {
      * 第一次，如果没有临时用户，帮忙创建一个临时用户
      */
     @GetMapping("/cart.html")
-    public String cartListPage(Model model){
+    public String cartListPage(Model model) throws ExecutionException, InterruptedException {
 
         //快速得到用户信息，id,user-key
-        UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
-
-
+//        UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
+        Cart cart = cartService.getCart();
+        model.addAttribute("cart",cart);
         return "cartList";
     }
 
