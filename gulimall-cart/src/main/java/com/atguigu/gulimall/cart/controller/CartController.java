@@ -5,6 +5,7 @@ import com.atguigu.gulimall.cart.interceptor.CartInterceptor;
 import com.atguigu.gulimall.cart.vo.UserInfoTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpSession;
 
@@ -33,5 +34,15 @@ public class CartController {
         UserInfoTo userInfoTo = CartInterceptor.threadLocal.get();
         System.out.println(userInfoTo);
         return "cartList";
+    }
+
+    /**
+     * 添加商品到购物车
+     * @return
+     */
+    @GetMapping("/addToCart")
+    public String addToCart(@RequestParam("skuId") Long skuId, @RequestParam("num") Integer num){
+
+        return "success";
     }
 }
