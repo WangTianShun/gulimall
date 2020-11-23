@@ -27,6 +27,24 @@ public class CartController {
 
     @Autowired
     CartService cartService;
+
+    @GetMapping("/deleteItem")
+    public String deleteItem(@RequestParam("skuId") Long skuId){
+        cartService.deleteItem(skuId);
+        return "redirect:http://cart.gulimall.com/cart.html";
+    }
+
+    @GetMapping("/changeItemCount")
+    public String changeItemCount(@RequestParam("skuId") Long skuId, @RequestParam("num") Integer num){
+        cartService.changeItemCount(skuId,num);
+        return "redirect:http://cart.gulimall.com/cart.html";
+    }
+
+    @GetMapping("/checkItem")
+    public String checkItem(@RequestParam("skuId") Long skuId, @RequestParam("check") Integer check){
+        cartService.checkItem(skuId,check);
+        return "redirect:http://cart.gulimall.com/cart.html";
+    }
     /**
      * 浏览器有一个cookie；user-key:标识用户身份，一个月后过期
      * 如果第一次使用jd购物车功能，都会给一个临时的用户身份
