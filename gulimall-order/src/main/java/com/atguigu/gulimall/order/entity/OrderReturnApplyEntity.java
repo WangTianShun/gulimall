@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.io.Serializable;
 import java.util.Date;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * 订单退货申请
@@ -15,6 +16,7 @@ import lombok.Data;
  * @email 563540326@qq.com
  * @date 2020-09-28 10:48:33
  */
+@ToString
 @Data
 @TableName("oms_order_return_apply")
 public class OrderReturnApplyEntity implements Serializable {
