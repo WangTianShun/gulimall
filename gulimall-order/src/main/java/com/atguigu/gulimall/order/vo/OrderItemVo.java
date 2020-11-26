@@ -33,4 +33,6 @@ public class OrderItemVo {
     //总价
     private BigDecimal totalPrice;
 
+    //重量
+    private BigDecimal weight;
 }

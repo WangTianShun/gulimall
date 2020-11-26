@@ -5,6 +5,7 @@ import org.apache.catalina.LifecycleState;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: OrderConfirmVo
@@ -35,6 +36,21 @@ public class OrderConfirmVo {
 
     //防重令牌
     String orderToken;
+
+    Integer count;
+
+    Map<Long,Boolean> stocks;
+
+    //总件数
+    public Integer getCount(){
+        Integer i = 0;
+        if (items != null){
+            for (OrderItemVo item : items) {
+                i += item.getCount();
+            }
+        }
+        return i;
+    }
 
     public List<MemberAddressVo> getAddress() {
         return address;
@@ -82,5 +98,13 @@ public class OrderConfirmVo {
 
     public void setOrderToken(String orderToken) {
         this.orderToken = orderToken;
+    }
+
+    public Map<Long, Boolean> getStocks() {
+        return stocks;
+    }
+
+    public void setStocks(Map<Long, Boolean> stocks) {
+        this.stocks = stocks;
     }
 }
