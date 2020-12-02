@@ -33,5 +33,7 @@ public interface OrderService extends IService<OrderEntity> {
      * @return
      */
     SubmitOrderResponseVo submitOrder(OrderSubmitVo submitVo);
+
+    OrderEntity getOrderByOrderSn(String orderSn);
 }
 

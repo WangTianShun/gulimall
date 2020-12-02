@@ -6,7 +6,7 @@ spring:
   datasource:
     username: root
     password: root
-    url: jdbc:mysql://172.20.10.3:3306/gulimall_pms?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://172.20.10.9:3306/gulimall_pms?useUnicode=true&characterEncoding=UTF-8
 #    url: jdbc:mysql://192.168.31.40:3306/gulimall_pms?useUnicode=true&characterEncoding=UTF-8
     driver-class-name: com.mysql.jdbc.Driver
   cloud:
@@ -23,7 +23,7 @@ spring:
   thymeleaf:
     cache: false   #关闭thymeleaf缓存
   redis:
-    host: 172.20.10.3
+    host: 172.20.10.9
     port: 6379
   session:
     store-type: redis   #指定session的存储格式

@@ -20,6 +20,11 @@ import javax.annotation.PostConstruct;
 public class MyRabbitConfig {
     @Autowired
     RabbitTemplate rabbitTemplate;
+
+    /**
+     * 使用JSON序列化机制，进行消息转换
+     * @return
+     */
     @Bean
     public MessageConverter messageConverter(){
         return new Jackson2JsonMessageConverter();

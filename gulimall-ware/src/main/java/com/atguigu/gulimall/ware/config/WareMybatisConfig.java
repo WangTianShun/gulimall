@@ -2,10 +2,16 @@ package com.atguigu.gulimall.ware.config;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
+import com.zaxxer.hikari.HikariDataSource;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.util.StringUtils;
+
+import javax.sql.DataSource;
+
 
 /**
  * @author WangTianShun
@@ -29,4 +35,13 @@ public class WareMybatisConfig {
         return paginationInterceptor;
     }
 
+   /* @Bean
+    public DataSource dataSource(DataSourceProperties dataSourceProperties){
+        //得到数据源
+        HikariDataSource dataSource = dataSourceProperties.initializeDataSourceBuilder().type(HikariDataSource.class).build();
+        if (StringUtils.hasText(dataSourceProperties.getName())){
+            dataSource.setPoolName(dataSourceProperties.getName());
+        }
+        return new DataSourceProxy(dataSource);
+    }*/
 }

@@ -22,7 +22,7 @@ import com.atguigu.gulimall.order.service.OrderItemService;
 
 import javax.swing.*;
 
-@RabbitListener(queues = {"hello-java-queue"})
+//@RabbitListener(queues = {"hello-java-queue"})
 @Service("orderItemService")
 public class OrderItemServiceImpl extends ServiceImpl<OrderItemDao, OrderItemEntity> implements OrderItemService {
 
@@ -54,40 +54,40 @@ public class OrderItemServiceImpl extends ServiceImpl<OrderItemDao, OrderItemEnt
      *
      */
     //@RabbitListener(queues = {"hello-java-queue"})
-    @RabbitHandler
-    public void receiverMessage(Message message, OrderReturnApplyEntity content,
-                                Channel channel) throws InterruptedException {
-        //消息体
-        byte[] body = message.getBody();
-        //消息头属性信息
-        MessageProperties properties = message.getMessageProperties();
-        System.out.println("接收到消息...内容:" + content);
-//        Thread.sleep(3000);
-        System.out.println("消息处理完成=》"+content.getReturnName());
-        //channel内按顺序自增的
-        long deliveryTag = message.getMessageProperties().getDeliveryTag();
-        System.out.println("deliveryTag:"+deliveryTag);
-        //签收货物，非批量模式
-        try{
-            if (deliveryTag % 2 == 0){
-                //收货
-                channel.basicAck(deliveryTag,false);
-                System.out.println("签收了货物。。。"+deliveryTag);
-            }else {
-                //退货requeue=false 丢弃  requeue=true发挥服务器，服务器重新入队。
-                channel.basicNack(deliveryTag,false,true);
-                System.out.println("没有签收货物..."+deliveryTag);
-            }
-
-        }catch (Exception e){
-            //网络中断
-        }
-
-    }
-
-    @RabbitHandler
-    public void receiverMessage(OrderEntity orderEntity){
-        System.out.println("接收到消息...内容:" + orderEntity);
-
-    }
+//    @RabbitHandler
+//    public void receiverMessage(Message message, OrderReturnApplyEntity content,
+//                                Channel channel) throws InterruptedException {
+//        //消息体
+//        byte[] body = message.getBody();
+//        //消息头属性信息
+//        MessageProperties properties = message.getMessageProperties();
+//        System.out.println("接收到消息...内容:" + content);
+////        Thread.sleep(3000);
+//        System.out.println("消息处理完成=》"+content.getReturnName());
+//        //channel内按顺序自增的
+//        long deliveryTag = message.getMessageProperties().getDeliveryTag();
+//        System.out.println("deliveryTag:"+deliveryTag);
+//        //签收货物，非批量模式
+//        try{
+//            if (deliveryTag % 2 == 0){
+//                //收货
+//                channel.basicAck(deliveryTag,false);
+//                System.out.println("签收了货物。。。"+deliveryTag);
+//            }else {
+//                //退货requeue=false 丢弃  requeue=true发挥服务器，服务器重新入队。
+//                channel.basicNack(deliveryTag,false,true);
+//                System.out.println("没有签收货物..."+deliveryTag);
+//            }
+//
+//        }catch (Exception e){
+//            //网络中断
+//        }
+//
+//    }
+//
+//    @RabbitHandler
+//    public void receiverMessage(OrderEntity orderEntity){
+//        System.out.println("接收到消息...内容:" + orderEntity);
+//
+//    }
 }

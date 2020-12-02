@@ -17,7 +17,7 @@ import java.util.Date;
 @SpringBootTest
 class GulimallOrderApplicationTests {
 
-    @Autowired
+      @Autowired
     AmqpAdmin amqpAdmin;
 
     @Autowired

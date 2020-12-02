@@ -20,6 +20,7 @@
     </properties>
 
     <dependencies>
+
         <!--属性配置的提示工具-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

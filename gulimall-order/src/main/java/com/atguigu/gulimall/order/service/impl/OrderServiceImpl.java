@@ -137,7 +137,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
         CompletableFuture.allOf(getAddressFuture,cartFuture).get();
         return confirmVo;
     }
-
+    // 本地事务，在分布式系统，只能控制自己的回滚，控制不了其他事务的回滚
+    // 分布式事务，最大原因，网络问题+分布式机器。
+   // @GlobalTransactional   //AT模式不适合高并发
     @Transactional
     @Override
     public SubmitOrderResponseVo submitOrder(OrderSubmitVo submitVo) {
@@ -164,7 +166,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
             BigDecimal payPrice = submitVo.getPayPrice();
             if (Math.abs(payAmount.subtract(payPrice).doubleValue()) <0.01){
                 // 金额对比成功
-                // 3、保存订单
+                // TODO 3、保存订单
                 saveOrder(order);
                 // 4、库存锁定,只要有异常回滚订单数据。订单号，订单项信息（skuId,skuName,num）
                 WareSkuLockVo wareSkuLockVo = new WareSkuLockVo();
@@ -178,10 +180,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 }).collect(Collectors.toList());
                 wareSkuLockVo.setLocks(orderItemVos);
                 // TODO 远程锁库存
+                // 库存成功了，但是网络原因超时了，订单回滚，库存不回滚
+                //为了保证高并发。库存服务自己回滚。可以发消息给库存服务
+                //库存服务本身也可以使用自动解锁模式，消息
                 R r = wmsFeignService.orderLockStock(wareSkuLockVo);
                 if (r.getCode() == 0){
                     //锁成功了
                     response.setOrder(order.getOrder());
+                    int i = 10/0;//订单回滚，库存不回滚
                     return response;
                 }else {
                     //锁定失败
@@ -199,6 +205,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
 //        }else {
 //            //不通过
 //        }
+    }
+
+    @Override
+    public OrderEntity getOrderByOrderSn(String orderSn) {
+        OrderEntity order_sn = this.getOne(new QueryWrapper<OrderEntity>().eq("order_sn", orderSn));
+        return order_sn;
     }
 
     /**
