@@ -6,6 +6,7 @@ import com.atguigu.gulimall.order.service.OrderService;
 import com.atguigu.gulimall.order.vo.OrderConfirmVo;
 import com.atguigu.gulimall.order.vo.OrderSubmitVo;
 import com.atguigu.gulimall.order.vo.SubmitOrderResponseVo;
+import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +24,7 @@ import java.util.concurrent.ExecutionException;
  * @Date: 2020/11/25 13:39
  * @Version 1.0
  */
+@Slf4j
 @Controller
 public class OrderWebController {
 
@@ -50,6 +52,7 @@ public class OrderWebController {
         // 下单 去创建订单 验证令牌 核算价格 锁定库存
         try {
             SubmitOrderResponseVo responseVo = orderService.submitOrder(submitVo);
+            System.out.println("============================="+responseVo.getCode());
             if (responseVo.getCode() == 0) {
                 // 下单成功到选择支付方式页面
                 model.addAttribute("submitOrderResp", responseVo);

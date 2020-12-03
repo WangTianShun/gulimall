@@ -34,10 +34,10 @@ public class MyRabbitConfig {
         return new Jackson2JsonMessageConverter();
     }
 
-    @RabbitListener(queues = "stock.release.stock.queue")
-    public void handle(Message message){
-
-    }
+//    @RabbitListener(queues = "stock.release.stock.queue")
+//    public void handle(Message message){
+//
+//    }
 
     @Bean
     public Exchange stockEventExchange() {
@@ -55,7 +55,7 @@ public class MyRabbitConfig {
         //			@Nullable Map<String, Object> arguments
         Map<String, Object> arguments = new HashMap<>();
         arguments.put("x-dead-letter-exchange", "stock-event-exchange");
-        arguments.put("x-dead-letter-routing-key", "order.release");
+        arguments.put("x-dead-letter-routing-key", "stock.release");
         arguments.put("x-message-ttl", 120000);
         return new Queue("stock.delay.queue", true, false, false, arguments);
     }
@@ -70,7 +70,7 @@ public class MyRabbitConfig {
     }
 
     @Bean
-    public Binding orderLockedBinding() {
+    public Binding stockLockedBinding() {
         return new Binding("stock.delay.queue",
                 Binding.DestinationType.QUEUE,
                 "stock-event-exchange",

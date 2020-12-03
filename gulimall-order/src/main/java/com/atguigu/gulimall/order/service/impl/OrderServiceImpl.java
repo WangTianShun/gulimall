@@ -184,11 +184,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
                 //为了保证高并发。库存服务自己回滚。可以发消息给库存服务
                 //库存服务本身也可以使用自动解锁模式，消息
                 R r = wmsFeignService.orderLockStock(wareSkuLockVo);
+                System.out.println("------------------r.getCode()----------------------------------"+r.getCode());
                 if (r.getCode() == 0){
                     //锁成功了
                     response.setOrder(order.getOrder());
                     int i = 10/0;//订单回滚，库存不回滚
+                    System.out.println("------------------r.response()----------------------------------");
                     return response;
+
                 }else {
                     //锁定失败
                     throw new NoStockException((String) r.get("msg"));
