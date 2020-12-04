@@ -21,11 +21,12 @@ public class LoginUserInterceptor implements HandlerInterceptor {
     public static ThreadLocal<MemberResponseVO> loginUser = new ThreadLocal<>();
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String uri = request.getRequestURI();
-        boolean match = new AntPathMatcher().match("/order/order/status/**", uri);
-        if (match){
+        String requestURI = request.getRequestURI();
+        AntPathMatcher matcher = new AntPathMatcher();
+        boolean status = matcher.match("/order/order/status/**", requestURI);
+        boolean payed = matcher.match("/payed/**", requestURI);
+        if (status || payed)
             return true;
-        }
 
 
         MemberResponseVO attribute = (MemberResponseVO) request.getSession().getAttribute(AuthServerConstant.LOGIN_USER);

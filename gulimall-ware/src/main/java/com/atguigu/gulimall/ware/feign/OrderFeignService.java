@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @Date: 2020/12/2 20:16
  * @Version 1.0
  */
-@FeignClient("gulimall-ware")
+@FeignClient("gulimall-order")
 public interface OrderFeignService {
     @GetMapping("/order/order/status/{orderSn}")
-    public R getOrderStatus(@PathVariable("orderSn") String orderSn);
+    R getOrderStatus(@PathVariable("orderSn") String orderSn);
 }
