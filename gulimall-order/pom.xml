@@ -20,6 +20,13 @@
     </properties>
 
     <dependencies>
+        <!--阿里支付模块-->
+        <!-- https://mvnrepository.com/artifact/com.alipay.sdk/alipay-sdk-java -->
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>4.9.28.ALL</version>
+        </dependency>
 
         <!--属性配置的提示工具-->
         <dependency>
