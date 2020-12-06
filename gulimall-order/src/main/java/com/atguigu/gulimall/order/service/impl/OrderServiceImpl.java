@@ -250,14 +250,33 @@ public class OrderServiceImpl extends ServiceImpl<OrderDao, OrderEntity> impleme
     public PayVo getOrderPay(String orderSn) {
         PayVo payVo = new PayVo();
         OrderEntity order = this.getOrderByOrderSn(orderSn);
+        //支付金额设置为两位小数，否则会报错
         BigDecimal bigDecimal = order.getPayAmount().setScale(2, BigDecimal.ROUND_UP);
         payVo.setTotal_amount(bigDecimal.toString());
         payVo.setOut_trade_no(order.getOrderSn());
         List<OrderItemEntity> order_sn = orderItemService.list(new QueryWrapper<OrderItemEntity>().eq("order_sn", orderSn));
         OrderItemEntity entity = order_sn.get(0);
+        //订单名称
         payVo.setSubject(entity.getSkuName());
+        //商品描述
         payVo.setBody(entity.getSkuAttrsVals());
         return payVo;
+    }
+
+    @Override
+    public PageUtils queryPageWithItem(Map<String, Object> params) {
+        MemberResponseVO memberResponseVO = LoginUserInterceptor.loginUser.get();
+        IPage<OrderEntity> page = this.page(
+                new Query<OrderEntity>().getPage(params),
+                new QueryWrapper<OrderEntity>().eq("member_id",memberResponseVO.getId()).orderByDesc("id")
+        );
+        List<OrderEntity> order_sn = page.getRecords().stream().map(order -> {
+            List<OrderItemEntity> entities = orderItemService.list(new QueryWrapper<OrderItemEntity>().eq("order_sn", order.getOrderSn()));
+            order.setItemEntities(entities);
+            return order;
+        }).collect(Collectors.toList());
+        page.setRecords(order_sn);
+        return new PageUtils(page);
     }
 
     /**
