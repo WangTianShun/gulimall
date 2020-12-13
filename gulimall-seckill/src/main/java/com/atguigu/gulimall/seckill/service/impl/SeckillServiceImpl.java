@@ -71,9 +71,14 @@ public class SeckillServiceImpl implements SeckillService {
             Long startTime = session.getStartTime().getTime();
             Long endTime = session.getEndTime().getTime();
             String key = SESSIONS_CACHE_PREFIX + startTime + "_" + endTime;
-            List<String> collect = session.getRelationEntities().stream().map(item -> item.getSkuId().toString()).collect(Collectors.toList());
-            // 缓存活动信息
-            redisTemplate.opsForList().leftPushAll(key, collect);
+            Boolean hasKey = redisTemplate.hasKey(key);
+
+            if (!hasKey){
+                List<String> collect = session.getRelationEntities().stream().map(item -> item.getPromotionId().toString() +"_"+ item.getSkuId().toString()).collect(Collectors.toList());
+                // 缓存活动信息
+                redisTemplate.opsForList().leftPushAll(key, collect);
+            }
+
         });
     }
 
@@ -81,33 +86,38 @@ public class SeckillServiceImpl implements SeckillService {
         // 准备hash操作
         BoundHashOperations<String, Object, Object> ops = redisTemplate.boundHashOps(SKUKILL_CACHE_PREFIX);
         sessions.stream().forEach(session -> {
+            // 随机码
+            String token = UUID.randomUUID().toString().replace("_", "");
             session.getRelationEntities().stream().forEach(seckillSkuVo -> {
-                // 缓存商品
-                SeckillSkuRedisTo redisTo = new SeckillSkuRedisTo();
-                // 1、sku的基本信息
-                R r = productFeignService.getSkuInfo(seckillSkuVo.getSkuId());
-                if (0  == r.getCode()){
-                    SkuInfoVo skuInfo = r.getData("skuInfo", new TypeReference<SkuInfoVo>() {
-                    });
-                    redisTo.setSkuInfo(skuInfo);
+                if (!ops.hasKey(seckillSkuVo.getPromotionSessionId().toString() + "_" + seckillSkuVo.getSkuId().toString())){
+                    // 缓存商品
+                    SeckillSkuRedisTo redisTo = new SeckillSkuRedisTo();
+                    // 1、sku的基本信息
+                    R r = productFeignService.getSkuInfo(seckillSkuVo.getSkuId());
+                    if (0  == r.getCode()){
+                        SkuInfoVo skuInfo = r.getData("skuInfo", new TypeReference<SkuInfoVo>() {
+                        });
+                        redisTo.setSkuInfo(skuInfo);
+                    }
+                    // 2、sku的秒杀信息
+                    BeanUtils.copyProperties(seckillSkuVo, redisTo);
+
+                    // 3、设置当前商品的秒杀时间信息
+                    redisTo.setStartTime(session.getStartTime().getTime());
+                    redisTo.setEndTime(session.getEndTime().getTime());
+
+                    // 4、随机码
+                    redisTo.setRandomCode(token);
+
+                    String jsonString = JSON.toJSONString(redisTo);
+                    ops.put(seckillSkuVo.getPromotionSessionId().toString() + "_" + seckillSkuVo.getSkuId().toString(), jsonString);
+                    // 如果当前这个场次的商品的库存信息已经上架就不需要上架
+                    // 5、使用库存作为分布式信号量 限流
+                    RSemaphore semaphore = redissonClient.getSemaphore(SKU_STOCK_SEMAPHORE + token);
+                    // 商品可以秒杀的数量作为信号量
+                    semaphore.trySetPermits(seckillSkuVo.getSeckillCount());
                 }
-                // 2、sku的秒杀信息
-                BeanUtils.copyProperties(seckillSkuVo, redisTo);
 
-                // 3、设置当前商品的秒杀时间信息
-                redisTo.setStartTime(session.getStartTime().getTime());
-                redisTo.setEndTime(session.getEndTime().getTime());
-
-                // 4、随机码
-                String token = UUID.randomUUID().toString().replace("_", "");
-                redisTo.setRandomCode(token);
-                // 5、使用库存作为分布式信号量 限流
-                RSemaphore semaphore = redissonClient.getSemaphore(SKU_STOCK_SEMAPHORE + token);
-                // 商品可以秒杀的数量作为信号量
-                semaphore.trySetPermits(seckillSkuVo.getSeckillCount());
-
-                String jsonString = JSON.toJSONString(redisTo);
-                ops.put(seckillSkuVo.getSkuId(), jsonString);
             });
         });
 
