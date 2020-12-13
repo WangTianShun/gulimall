@@ -15,10 +15,11 @@
         <module>gulimall-order</module>
         <module>gulimall-coupon</module>
         <module>gulimall-member</module>
-        <module>renren-fast</module>
         <module>renren-generator</module>
         <module>gulimall-commom</module>
         <module>gulimall-gateway</module>
+        <module>renren-fast</module>
+        <module>gulimall-seckill</module>
     </modules>
 
 

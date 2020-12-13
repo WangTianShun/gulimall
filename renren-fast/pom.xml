@@ -52,17 +52,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.auguigu.gulimall</groupId>
-			<artifactId>gulimall-commom</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.alibaba.cloud</groupId>
-					<artifactId>spring-cloud-starter-alibaba-seata</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
