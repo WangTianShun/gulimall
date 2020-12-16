@@ -163,7 +163,7 @@ public class SeckillServiceImpl implements SeckillService {
                         // 1.4、验证这个人是否购买过。幂等性处理。如果只要秒杀成功，就去占位  userId_sessionId_skillId
                         // SETNX
                         String redisKey = repsVo.getId() + "_" + skuId;
-                        // 1.4.1 自动过期--通过在redis中使用 用户id-skuId 来占位看是否买过
+                        // 1.4.1 自动过期--通过在redis中使用 用户id_skuId 来占位看是否买过
                         Boolean ifAbsent = redisTemplate.opsForValue().setIfAbsent(redisKey, num.toString(), ttl, TimeUnit.MILLISECONDS);
                         if (ifAbsent){
                             // 1.4.2 占位成功，说明该用户未秒杀过该商品，则继续尝试获取库存信号量
