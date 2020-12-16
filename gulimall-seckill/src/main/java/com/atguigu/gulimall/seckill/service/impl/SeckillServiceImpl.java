@@ -16,8 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundHashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -66,6 +68,40 @@ public class SeckillServiceImpl implements SeckillService {
         }
     }
 
+    @Override
+    public List<SeckillSkuRedisTo> getCurrentSeckillSkus() {
+        Set<String> keys = redisTemplate.keys(SESSIONS_CACHE_PREFIX + "*");
+        long currentTime = System.currentTimeMillis();
+        for (String key : keys) {
+            String replace = key.replace(SESSIONS_CACHE_PREFIX, "");
+            String[] split = replace.split("_");
+            long startTime = Long.parseLong(split[0]);
+            long endTime = Long.parseLong(split[1]);
+            // 当前秒杀活动处于有效期内
+            if (currentTime > startTime && currentTime < endTime) {
+                // 获取这个秒杀场次的所有商品信息
+                List<String> range = redisTemplate.opsForList().range(key, -100, 100);
+                BoundHashOperations<String, String, String> hashOps = redisTemplate.boundHashOps(SKUKILL_CACHE_PREFIX);
+                assert range != null;
+                List<String> strings = hashOps.multiGet(range);
+                if (!CollectionUtils.isEmpty(strings)) {
+                    return strings.stream().map(item -> JSON.parseObject(item, SeckillSkuRedisTo.class))
+                            .collect(Collectors.toList());
+                }
+                break;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public SeckillSkuRedisTo getSkuSecKillInfo(Long skuId) {
+        // 1、找到所有需要参与秒杀的商品的key
+        BoundHashOperations<String, String, String> operations = redisTemplate.boundHashOps(SKUKILL_CACHE_PREFIX);
+
+        return null;
+    }
+
     private void saveSessionInfos(List<SeckillSessionWithSkus> sessions){
         sessions.stream().forEach(session -> {
             Long startTime = session.getStartTime().getTime();
@@ -74,7 +110,10 @@ public class SeckillServiceImpl implements SeckillService {
             Boolean hasKey = redisTemplate.hasKey(key);
 
             if (!hasKey){
-                List<String> collect = session.getRelationEntities().stream().map(item -> item.getPromotionId().toString() +"_"+ item.getSkuId().toString()).collect(Collectors.toList());
+                List<String> collect = session.getRelationEntities()
+                        .stream()
+                        .map(item -> item.getPromotionId().toString() +"_"+ item.getSkuId().toString())
+                        .collect(Collectors.toList());
                 // 缓存活动信息
                 redisTemplate.opsForList().leftPushAll(key, collect);
             }

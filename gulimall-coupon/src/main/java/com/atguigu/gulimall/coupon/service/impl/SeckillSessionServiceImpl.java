@@ -24,6 +24,7 @@ import com.atguigu.common.utils.Query;
 import com.atguigu.gulimall.coupon.dao.SeckillSessionDao;
 import com.atguigu.gulimall.coupon.entity.SeckillSessionEntity;
 import com.atguigu.gulimall.coupon.service.SeckillSessionService;
+import org.springframework.util.CollectionUtils;
 
 
 @Service("seckillSessionService")
@@ -44,19 +45,15 @@ public class SeckillSessionServiceImpl extends ServiceImpl<SeckillSessionDao, Se
     @Override
     public List<SeckillSessionEntity> getLasts3DaySession() {
         //计算最近三天
-        LocalDate now = LocalDate.now();
-        LocalDate plus = now.plusDays(3);
         List<SeckillSessionEntity> list = this.list(new QueryWrapper<SeckillSessionEntity>().between("start_time", startTime(), endTime()));
-        if (null != list && list.size() >0){
-            List<SeckillSessionEntity> collect = list.stream().map(session -> {
+        if (!CollectionUtils.isEmpty(list)) {
+            return list.stream().map(session -> {
                 Long id = session.getId();
                 List<SeckillSkuRelationEntity> relationEntities = seckillSkuRelationService.list(new QueryWrapper<SeckillSkuRelationEntity>().eq("promotion_session_id", id));
                 session.setRelationEntities(relationEntities);
                 return session;
             }).collect(Collectors.toList());
-            return collect;
         }
-
         return null;
     }
 
