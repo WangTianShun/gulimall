@@ -632,12 +632,12 @@
 									</div>
 								</div>
 							</div>
-							<div class="box-btns-two" th:if="${item.seckillInfo.startTime <= #dates.createNow().getTime() && #dates.createNow().getTime() <= item.seckillInfo.endTime}">
+							<div class="box-btns-two" th:if="${item.seckillInfo != null && (item.seckillInfo.startTime <= #dates.createNow().getTime() && #dates.createNow().getTime() <= item.seckillInfo.endTime)}">
 								<a href="#" id="seckillA" th:attr="skuId=${item.info.skuId},sessionId=${item.seckillInfo.promotionSessionId},code=${item.seckillInfo.randomCode}">
 									立即抢购
 								</a>
 							</div>
-							<div class="box-btns-two" th:if="${item.seckillInfo.startTime > #dates.createNow().getTime() || #dates.createNow().getTime() > item.seckillInfo.endTime}">
+							<div class="box-btns-two" th:if="${item.seckillInfo == null || (item.seckillInfo.startTime > #dates.createNow().getTime() || #dates.createNow().getTime() > item.seckillInfo.endTime)}">
 								<a href="#" id="addToCart" th:attr="skuId=${item.info.skuId}">
 									加入购物车
 								</a>
