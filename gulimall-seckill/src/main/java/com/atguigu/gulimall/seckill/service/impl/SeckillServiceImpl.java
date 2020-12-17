@@ -144,7 +144,7 @@ public class SeckillServiceImpl implements SeckillService {
         // 从拦截器获取用户信息
         MemberResponseVO repsVo = LoginUserInterceptor.loginUser.get();
         // 1、获取当前商品的详细信息
-        BoundHashOperations<String, String, String> hashOps = redisTemplate.boundHashOps("SKUKILL_CACHE_PREFIX");
+        BoundHashOperations<String, String, String> hashOps = redisTemplate.boundHashOps(SKUKILL_CACHE_PREFIX);
         String json = hashOps.get(killId);
         if (!StringUtils.isEmpty(json)){
             SeckillSkuRedisTo redis = JSON.parseObject(json, SeckillSkuRedisTo.class);
@@ -213,7 +213,6 @@ public class SeckillServiceImpl implements SeckillService {
             Long endTime = session.getEndTime().getTime();
             String key = SESSIONS_CACHE_PREFIX + startTime + "_" + endTime;
             Boolean hasKey = redisTemplate.hasKey(key);
-
             if (!hasKey){
                 List<String> collect = session.getRelationEntities()
                         .stream()
@@ -245,7 +244,6 @@ public class SeckillServiceImpl implements SeckillService {
                     }
                     // 2、sku的秒杀信息
                     BeanUtils.copyProperties(seckillSkuVo, redisTo);
-
                     // 3、设置当前商品的秒杀时间信息
                     redisTo.setStartTime(session.getStartTime().getTime());
                     redisTo.setEndTime(session.getEndTime().getTime());

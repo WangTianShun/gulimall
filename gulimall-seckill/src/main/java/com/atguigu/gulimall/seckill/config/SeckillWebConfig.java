@@ -2,6 +2,7 @@ package com.atguigu.gulimall.seckill.config;
 
 import com.atguigu.gulimall.seckill.interceptor.LoginUserInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @Date: 2020/12/16 13:44
  * @Version 1.0
  */
+@Configuration
 public class SeckillWebConfig implements WebMvcConfigurer {
 
     @Autowired

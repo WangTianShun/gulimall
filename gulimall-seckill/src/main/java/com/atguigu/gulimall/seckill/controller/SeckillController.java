@@ -48,6 +48,7 @@ public class SeckillController {
         // 1、判断是否登录(登录拦截器已经自动处理)
 
         String orderSn = seckillService.kill(killId, key, num);
+        System.out.println("orderSn============="+orderSn);
         model.addAttribute("orderSn", orderSn);
         return "success";
     }
