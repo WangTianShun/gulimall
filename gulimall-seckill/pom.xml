@@ -20,6 +20,12 @@
     </properties>
 
     <dependencies>
+        <!--统计审计信息-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
         <!--模板引擎 thymeleaf-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

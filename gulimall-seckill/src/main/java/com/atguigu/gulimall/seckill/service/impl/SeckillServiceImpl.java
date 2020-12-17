@@ -74,7 +74,7 @@ public class SeckillServiceImpl implements SeckillService {
             List<SeckillSessionWithSkus> data = session.getData(new TypeReference<List<SeckillSessionWithSkus>>() {
             });
             // 缓存到redis
-
+            System.out.println("data---------------------"+data);
             // 1、缓存活动信息
             saveSessionInfos(data);
 
@@ -206,7 +206,7 @@ public class SeckillServiceImpl implements SeckillService {
         }
         return null;
     }
-
+    // TODO 为空没有处理
     private void saveSessionInfos(List<SeckillSessionWithSkus> sessions){
         sessions.stream().forEach(session -> {
             Long startTime = session.getStartTime().getTime();
@@ -218,13 +218,15 @@ public class SeckillServiceImpl implements SeckillService {
                         .stream()
                         .map(item -> item.getPromotionId().toString() +"_"+ item.getSkuId().toString())
                         .collect(Collectors.toList());
+                System.out.println("saveSessionInfos------------------------"+collect);
                 // 缓存活动信息
                 redisTemplate.opsForList().leftPushAll(key, collect);
             }
 
         });
-    }
 
+    }
+    // TODO 为空没有处理
     private void saveSessionSkuInfos(List<SeckillSessionWithSkus> sessions){
         // 准备hash操作
         BoundHashOperations<String, Object, Object> ops = redisTemplate.boundHashOps(SKUKILL_CACHE_PREFIX);
@@ -252,6 +254,7 @@ public class SeckillServiceImpl implements SeckillService {
                     redisTo.setRandomCode(token);
 
                     String jsonString = JSON.toJSONString(redisTo);
+                    System.out.println("saveSessionSkuInfos------------------------"+jsonString);
                     ops.put(seckillSkuVo.getPromotionSessionId().toString() + "_" + seckillSkuVo.getSkuId().toString(), jsonString);
                     // 如果当前这个场次的商品的库存信息已经上架就不需要上架
                     // 5、使用库存作为分布式信号量 限流
@@ -262,6 +265,8 @@ public class SeckillServiceImpl implements SeckillService {
 
             });
         });
+
+
 
     }
 }
