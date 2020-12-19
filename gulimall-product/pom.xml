@@ -20,6 +20,12 @@
     </properties>
 
     <dependencies>
+        <!--统计审计信息-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-actuator</artifactId>-->
+<!--        </dependency>-->
+
         <!--整合SpringSession完成session共享问题-->
         <dependency>
             <groupId>org.springframework.session</groupId>

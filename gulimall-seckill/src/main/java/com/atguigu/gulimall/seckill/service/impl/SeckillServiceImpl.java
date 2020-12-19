@@ -1,5 +1,9 @@
 package com.atguigu.gulimall.seckill.service.impl;
 
+import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.atguigu.common.to.mq.SeckillOrderTo;
@@ -83,6 +87,7 @@ public class SeckillServiceImpl implements SeckillService {
         }
     }
 
+
     @Override
     public List<SeckillSkuRedisTo> getCurrentSeckillSkus() {
         Set<String> keys = redisTemplate.keys(SESSIONS_CACHE_PREFIX + "*");
@@ -108,6 +113,82 @@ public class SeckillServiceImpl implements SeckillService {
         }
         return null;
     }
+
+//    public List<SeckillSkuRedisTo> blockHandler(BlockException e){
+//        log.error("getCurrentSeckillSkusResource被限流了。。。。");
+//        return null;
+//
+//    }
+
+//    /**
+//     * blockHandler 函数会在原方法被限流/降级/系统保护的时候调用，而fallback函数会针对所有类型的异常
+//     * @return
+//     */
+//    //基于注解的限流
+//    @SentinelResource(value = "getCurrentSeckillSkusResource",blockHandler = "blockHandler")
+//    @Override
+//    public List<SeckillSkuRedisTo> getCurrentSeckillSkus() {
+//        try(Entry entry = SphU.entry("seckillSkus")){
+//            Set<String> keys = redisTemplate.keys(SESSIONS_CACHE_PREFIX + "*");
+//            long currentTime = System.currentTimeMillis();
+//            for (String key : keys) {
+//                String replace = key.replace(SESSIONS_CACHE_PREFIX, "");
+//                String[] split = replace.split("_");
+//                long startTime = Long.parseLong(split[0]);
+//                long endTime = Long.parseLong(split[1]);
+//                // 当前秒杀活动处于有效期内
+//                if (currentTime > startTime && currentTime < endTime) {
+//                    // 获取这个秒杀场次的所有商品信息
+//                    List<String> range = redisTemplate.opsForList().range(key, -100, 100);
+//                    BoundHashOperations<String, String, String> hashOps = redisTemplate.boundHashOps(SKUKILL_CACHE_PREFIX);
+//                    assert range != null;
+//                    List<String> strings = hashOps.multiGet(range);
+//                    if (!CollectionUtils.isEmpty(strings)) {
+//                        return strings.stream().map(item -> JSON.parseObject(item, SeckillSkuRedisTo.class))
+//                                .collect(Collectors.toList());
+//                    }
+//                    break;
+//                }
+//            }
+//        }catch (BlockException e){
+//            log.error("资源被限流{}"+e.getMessage());
+//        }
+//
+//        return null;
+//    }
+
+
+//    代码的方式：自定义受保护的限流操作
+//    @Override
+//    public List<SeckillSkuRedisTo> getCurrentSeckillSkus() {
+//        try(Entry entry = SphU.entry("seckillSkus")){
+//            Set<String> keys = redisTemplate.keys(SESSIONS_CACHE_PREFIX + "*");
+//            long currentTime = System.currentTimeMillis();
+//            for (String key : keys) {
+//                String replace = key.replace(SESSIONS_CACHE_PREFIX, "");
+//                String[] split = replace.split("_");
+//                long startTime = Long.parseLong(split[0]);
+//                long endTime = Long.parseLong(split[1]);
+//                // 当前秒杀活动处于有效期内
+//                if (currentTime > startTime && currentTime < endTime) {
+//                    // 获取这个秒杀场次的所有商品信息
+//                    List<String> range = redisTemplate.opsForList().range(key, -100, 100);
+//                    BoundHashOperations<String, String, String> hashOps = redisTemplate.boundHashOps(SKUKILL_CACHE_PREFIX);
+//                    assert range != null;
+//                    List<String> strings = hashOps.multiGet(range);
+//                    if (!CollectionUtils.isEmpty(strings)) {
+//                        return strings.stream().map(item -> JSON.parseObject(item, SeckillSkuRedisTo.class))
+//                                .collect(Collectors.toList());
+//                    }
+//                    break;
+//                }
+//            }
+//        }catch (BlockException e){
+//            log.error("资源被限流{}"+e.getMessage());
+//        }
+//
+//        return null;
+//    }
 
     @Override
     public SeckillSkuRedisTo getSkuSecKillInfo(Long skuId) {

@@ -4,6 +4,7 @@ spring:
         druid:
             driver-class-name: com.mysql.cj.jdbc.Driver
             url: jdbc:mysql://172.20.10.9:3306/gulimall_admin?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+#            url: jdbc:mysql://192.168.31.52:3306/gulimall_admin?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
             username: root
             password: root
             initial-size: 10
@@ -32,17 +33,7 @@ spring:
                 wall:
                     config:
                         multi-statement-allow: true
-application:
-    name: renren-fast
-    cloud:
-        nacos:
-            discovery:
-                server-addr: 127.0.0.1:8848
 
-            config:
-                name: renren-fast
-                server-addr: 127.0.0.1.8848
-                namespace: ee409c3f-3206-4a3b-ba65-7376922a886d
 
 ##多数据源的配置
 #dynamic:

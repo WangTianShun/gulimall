@@ -20,6 +20,14 @@
     </properties>
 
     <dependencies>
+
+        <!-- 引入sentinel网关限流 -->
+<!--        <dependency>-->
+<!--            <groupId>com.alibaba.cloud</groupId>-->
+<!--            <artifactId>spring-cloud-alibaba-sentinel-gateway</artifactId>-->
+<!--            <version>2.2.0.RELEASE</version>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>com.auguigu.gulimall</groupId>
             <artifactId>gulimall-commom</artifactId>

@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @Date: 2020/12/16 9:18
  * @Version 1.0
  */
-@FeignClient("gulimall-seckill")
+
+//@FeignClient(value = "gulimall-seckill",fallback = SeckillFeignServiceFallBack.class)  //降级
+@FeignClient(value = "gulimall-seckill")
 public interface SeckillFeignService {
 
     @GetMapping("/sku/seckill/{skuId}")

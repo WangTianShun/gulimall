@@ -26,11 +26,6 @@
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
         </dependency>
 
-<!--        &lt;!&ndash;统计审计信息&ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-actuator</artifactId>-->
-<!--        </dependency>-->
         <!--配置apache.http.client.HttpClient依赖-->
         <dependency>
             <groupId>com.alibaba</groupId>
